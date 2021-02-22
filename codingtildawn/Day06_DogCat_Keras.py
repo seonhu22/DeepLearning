@@ -1,6 +1,6 @@
 from keras.preprocessing.image import ImageDataGenerator
 from keras.layers import *
-from keras.models import Model
+from keras.models import Sequential
 import numpy as np
 
 # ImageDataGenerator: 이미지들로 데이터 셋 만드는 객체
@@ -19,17 +19,15 @@ print(x_batch.shape); print(y_batch.shape)
 print(x_batch.max()); print(x_batch.min())
 
 def build_model():
-    x = Input(shape = (64, 64, 3))
-    out = x
+    model = Sequential()
 
     # Flatten()(out): out인자를 한줄로 펼침
-    out = Flatten()(out)
-    out = Dense(512, activation = 'relu')(out)
-    out = Dense(256, activation = 'relu')(out)
-    out = Dense(64, activation = 'relu')(out)
-    out = Dense(1, activation = 'sigmoid')(out)
+    model.add(Flatten(input_shape = (64, 64, 3)))
+    model.add(Dense(512, activation = 'relu'))
+    model.add(Dense(256, activation = 'relu'))
+    model.add(Dense(64, activation = 'relu'))
+    model.add(Dense(1, activation = 'sigmoid'))
 
-    model = Model(x, out)
     return model
 
 model = build_model()
@@ -38,8 +36,8 @@ print(model.summary())
 # Train Model
 # binary_crossentropy 는 0과 1사이에서만 사용하는 함수
 # binary_crossentropy: t와 y가 비슷할수록 loss down /// t = {0, 1} -> 정답이 0이면 결과가 0, 정답이 1이면 결과가 1 /// (t = 0, y = 0), (t = 1, y = 1)
-model.compile(optimizer = 'sgd', loss = 'binary_crossentropy', metrics = ['binary_accuracy'])
-history = model.fit(train_gen, epochs = 1, steps_per_epoch = len(train_gen))
+model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['binary_accuracy'])
+model.fit(train_gen, epochs = 10, batch_size = 32, steps_per_epoch = len(train_gen), validation_split = 0.2)
 
 # Evaluate and Test Model
 x_tests, y_tests = [], []

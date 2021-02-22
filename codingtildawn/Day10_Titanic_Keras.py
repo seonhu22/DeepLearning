@@ -163,8 +163,7 @@ train.head()
 train['Fareband'] = pd.qcut(train['Fare'], 4, labels = [1, 2, 3, 4])
 test['Fareband'] = pd.qcut(test['Fare'], 4, labels = [1, 2, 3, 4])
 
-train = train.drop(['Fare'], axis = 1)
-test = test.drop(['Fare'], axis = 1)
+
 
 train.head()
 
